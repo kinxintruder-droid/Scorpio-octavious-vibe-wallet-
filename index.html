@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorpio Wallet | Octavius Elite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap');
+        :root { --scorpio-blue: #0ea5e9; --obsidian: #020617; }
+        body { background-color: var(--obsidian); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.1); }
+        .scorpio-gradient { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); }
+        .nav-active { color: var(--scorpio-blue); border-bottom: 2px solid var(--scorpio-blue); }
+        .octavius-vibe { border: 1px solid #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="page-auth" class="min-h-screen flex items-center justify-center p-6">
+        <div class="max-w-md w-full glass p-10 rounded-[2.5rem] border-sky-500/30 border text-center">
+            <i class="fas fa-scorpion text-6xl text-sky-500 mb-6"></i>
+            <h1 class="text-3xl font-extrabold tracking-widest text-white uppercase">Scorpio</h1>
+            <p class="text-sky-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2 mb-8">Secure Octavius Protocol</p>
+            
+            <div class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="Elite Email" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 focus:border-sky-500 outline-none transition text-sm">
+                <input type="password" id="loginPass" placeholder="Security Key" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 focus:border-sky-500 outline-none transition text-sm">
+                <button onclick="handleAuth()" class="w-full scorpio-gradient py-4 rounded-2xl font-extrabold text-sm shadow-lg hover:brightness-110 transition">AUTHENTICATE</button>
+                
+                <div class="p-4 bg-sky-500/10 rounded-xl mt-4">
+                    <p class="text-[10px] text-sky-300 leading-tight">
+                        <i class="fas fa-shield-alt mr-1"></i> 
+                        <strong>ENCRYPTION NOTICE:</strong> New users must sign in and sign out with email/password to initialize session keys. Balance starts at $0.00 until funds are received from external linked accounts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden pb-24">
+        
+        <header class="p-6 flex justify-between items-center sticky top-0 z-50 glass">
+            <div class="flex items-center gap-3">
+                <img id="headerPic" src="https://ui-avatars.com/api/?name=User&background=0ea5e9&color=fff" class="w-10 h-10 rounded-full border-2 border-sky-500 object-cover shadow-lg">
+                <div>
+                    <h3 id="displayNick" class="font-extrabold text-sm text-white">Elite Member</h3>
+                    <p id="displayEmail" class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter"></p>
+                </div>
+            </div>
+            <button onclick="signOut()" class="text-red-500 text-[10px] font-bold border border-red-500/30 px-3 py-1 rounded-full hover:bg-red-500/10 transition">DEACTIVATE SESSION</button>
+        </header>
+
+        <main class="p-6 max-w-4xl mx-auto">
+            
+            <section id="view-dashboard" class="space-y-6">
+                <div class="glass p-8 rounded-[2rem] scorpio-gradient shadow-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Octavius Secure Balance</p>
+                        <h2 class="text-5xl font-extrabold my-2">$<span id="balanceDisplay">0.00</span></h2>
+                        <div class="flex gap-4 mt-6">
+                            <button onclick="showPage('send')" class="bg-white text-blue-900 px-8 py-2 rounded-full text-xs font-extrabold hover:scale-105 transition">SEND</button>
+                            <button onclick="showPage('receive')" class="bg-blue-900/30 text-white px-8 py-2 rounded-full text-xs font-extrabold border border-white/20 hover:bg-blue-900/50 transition">RECEIVE</button>
+                        </div>
+                    </div>
+                    <i class="fas fa-dragon absolute -right-4 -bottom-4 text-9xl opacity-10"></i>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass p-4 rounded-2xl border-sky-500/30 bg-sky-500/5">
+                        <p class="text-[9px] text-sky-400 font-bold uppercase">Octavius Vibe (OCTX)</p>
+                        <p class="text-xl font-extrabold">0.00</p>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border-slate-800">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">Bitcoin (BTC)</p>
+                        <p class="text-xl font-extrabold">0.0000</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-market" class="hidden space-y-6">
+                <h2 class="text-2xl font-extrabold">Elite Trade Market</h2>
+                <div class="space-y-3">
+                    <div class="glass p-4 rounded-2xl flex justify-between items-center border-l-4 border-sky-500">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center font-bold text-[10px] text-white">OCTX</div>
+                            <div><p class="font-bold">OCTX/USD</p><p class="text-xs text-slate-500">Octavius Vibe</p></div>
+                        </div>
+                        <div class="text-right"><p class="font-bold text-sky-400">$12.42</p><p class="text-xs text-green-400">+5.2%</p></div>
+                    </div>
+                    <div class="glass p-4 rounded-2xl flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center font-bold text-[10px] text-white">BTC</div>
+                            <div><p class="font-bold">BTC/USD</p><p class="text-xs text-slate-500">Bitcoin</p></div>
+                        </div>
+                        <div class="text-right"><p class="font-bold">$49,210</p><p class="text-xs text-red-400">-1.1%</p></div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <p class="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest text-center">Instant Funding Gateway</p>
+                    <button class="bg-white w-full py-4 rounded-2xl flex items-center justify-center transition hover:bg-slate-200">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" class="h-6" alt="GPay">
+                    </button>
+                </div>
+            </section>
+
+            <section id="view-send" class="hidden space-y-6">
+                <h2 class="text-2xl font-extrabold">External Transfer</h2>
+                <div class="glass p-6 rounded-3xl space-y-4">
+                    <div class="bg-sky-500/10 border border-sky-500/30 p-4 rounded-xl">
+                        <p class="text-[10px] text-sky-300 leading-snug">
+                            <i class="fas fa-info-circle mr-1"></i> 
+                            <strong>FEE PROTOCOL:</strong> A fixed <strong>$1.00 USD</strong> security fee is applied to transfers to external platforms (Binance, BitPay, Trust, etc.). Fees are routed to <strong>kinxintruder@gmail.com</strong>.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-bold uppercase ml-1">Select Asset</label>
+                        <select id="sendAsset" class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm mt-1 outline-none text-white">
+                            <option value="OCTX">Octavius Vibe (OCTX)</option>
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="DOGE">Dogecoin (DOGE)</option>
+                            <option value="USDT">Tether (USDT)</option>
+                        </select>
+                    </div>
+                    <input type="email" id="recipientEmail" placeholder="Recipient Scorpio Email or External Address" class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-white outline-none focus:border-sky-500">
+                    <input type="number" id="sendAmount" placeholder="Amount to Send" class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-white outline-none focus:border-sky-500">
+                    
+                    <button onclick="executeSend()" class="w-full scorpio-gradient py-4 rounded-xl font-bold uppercase tracking-widest text-sm shadow-xl">Confirm & Sign Transaction</button>
+                </div>
+            </section>
+
+            <section id="view-receive" class="hidden space-y-6 text-center">
+                <h2 class="text-2xl font-extrabold">Inbound Gateway</h2>
+                <div class="glass p-8 rounded-[2.5rem] border-sky-500/20">
+                    <div class="bg-white p-4 rounded-2xl inline-block mb-6">
+                        <i class="fas fa-qrcode text-black text-8xl"></i>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2 font-bold uppercase">Private Gateway Key</p>
+                    <code class="block p-4 bg-slate-900 rounded-xl text-sky-400 text-[10px] mb-4 font-bold border border-sky-900/50 break-all">
+                        SCORP-OCTX-SECRET-9921-GATEWAY-ALPHA
+                    </code>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                            <p class="text-[9px] text-slate-500 uppercase">DOGE Addr</p>
+                            <p class="text-[10px] font-bold text-yellow-500">DF6g...88hQ</p>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                            <p class="text-[9px] text-slate-500 uppercase">USDT Addr</p>
+                            <p class="text-[10px] font-bold text-green-500">0x71...F21A</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-[10px] text-sky-500 font-bold italic leading-relaxed">
+                        Funds sent from any Google-linked account or blockchain will credit your balance instantly via the Octavius bridging protocol.
+                    </p>
+                </div>
+            </section>
+
+            <section id="view-devices" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-extrabold">Account Bridging</h2>
+                    <span class="bg-sky-500 text-[10px] font-bold px-2 py-1 rounded">ACTIVE</span>
+                </div>
+                <div class="glass p-6 rounded-3xl space-y-4">
+                    <p class="text-[11px] text-slate-400 text-center mb-4">You can link this Scorpio Elite account to multiple devices to sync your private keys and earn balance.</p>
+                    
+                    <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-2xl border border-sky-500/20">
+                        <div class="flex items-center gap-4">
+                            <i class="fas fa-mobile-alt text-2xl text-sky-500"></i>
+                            <div><p class="text-sm font-bold">Current Session</p><p class="text-[10px] text-green-500 font-bold">PRIMARY NODE</p></div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full border border-sky-500/50 text-sky-500 py-4 rounded-2xl text-xs font-bold hover:bg-sky-500/5 transition">
+                        <i class="fas fa-link mr-2"></i>LINK NEW GOOGLE ACCOUNT
+                    </button>
+                </div>
+            </section>
+
+            <section id="view-profile" class="hidden space-y-6">
+                <h2 class="text-2xl font-extrabold text-white">Elite Identity</h2>
+                <div class="glass p-8 rounded-3xl text-center">
+                    <div class="relative inline-block mb-6">
+                        <img id="profilePic" src="https://ui-avatars.com/api/?name=User&background=0ea5e9&color=fff" class="w-28 h-28 rounded-[2rem] border-4 border-sky-500 object-cover mx-auto shadow-2xl">
+                        <label class="absolute -bottom-2 -right-2 bg-sky-500 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer border-4 border-obsidian hover:scale-110 transition">
+                            <i class="fas fa-camera text-xs"></i>
+                            <input type="file" class="hidden" onchange="updatePhoto(this)">
+                        </label>
+                    </div>
+                    <div class="space-y-4 text-left">
+                        <div>
+                            <label class="text-[10px] text-sky-500 font-bold uppercase ml-1">Identity Alias</label>
+                            <input type="text" id="nickInput" placeholder="New Nickname" class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 outline-none mt-1 focus:border-sky-500 transition text-white">
+                        </div>
+                        <button onclick="saveProfile()" class="w-full scorpio-gradient py-4 rounded-xl font-extrabold text-sm uppercase shadow-xl">Update Node Identity</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 glass h-20 flex justify-around items-center border-t border-sky-500/10 z-50 px-2">
+            <button onclick="showPage('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-[8px] font-bold nav-active py-2"><i class="fas fa-wallet text-lg"></i>HOME</button>
+            <button onclick="showPage('market')" id="nav-market" class="flex flex-col items-center gap-1 text-[8px] font-bold py-2"><i class="fas fa-chart-line text-lg"></i>MARKET</button>
+            <button onclick="showPage('send')" id="nav-send" class="flex flex-col items-center gap-1 text-[8px] font-bold py-2"><i class="fas fa-paper-plane text-lg"></i>SEND</button>
+            <button onclick="showPage('receive')" id="nav-receive" class="flex flex-col items-center gap-1 text-[8px] font-bold py-2"><i class="fas fa-qrcode text-lg"></i>RECEIVE</button>
+            <button onclick="showPage('devices')" id="nav-devices" class="flex flex-col items-center gap-1 text-[8px] font-bold py-2"><i class="fas fa-sync text-lg"></i>SYNC</button>
+            <button onclick="showPage('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-[8px] font-bold py-2"><i class="fas fa-user-shield text-lg"></i>PROFILE</button>
+        </nav>
+    </div>
+
+    <script>
+        let currentUserEmail = "";
+        let currentBalance = 0.00; // Fixed start at 0.00
+        const adminEmail = "kinxintruder@gmail.com";
+
+        function handleAuth() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if(!email || !pass) {
+                return alert("Security Protocol: Enter Email and Security Key.");
+            }
+            
+            currentUserEmail = email;
+            document.getElementById('page-auth').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('displayEmail').innerText = email;
+            
+            // Note: Users start at 0.00. No "fake earn" logic here.
+            updateDisplay();
+        }
+
+        function signOut() {
+            alert("Session Encrypted & Closed. Sign in again to reactivate your secure keys.");
+            location.reload(); // Hard reset for security
+        }
+
+        function showPage(pageId) {
+            const views = ['dashboard', 'market', 'send', 'receive', 'devices', 'profile'];
+            views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
+            document.getElementById('view-' + pageId).classList.remove('hidden');
+
+            const navs = ['dashboard', 'market', 'send', 'receive', 'devices', 'profile'];
+            navs.forEach(n => {
+                const btn = document.getElementById('nav-' + n);
+                if(btn) btn.classList.remove('nav-active');
+            });
+            document.getElementById('nav-' + pageId).classList.add('nav-active');
+        }
+
+        function executeSend() {
+            const recipient = document.getElementById('recipientEmail').value;
+            const amount = parseFloat(document.getElementById('sendAmount').value);
+            const fee = 1.00;
+
+            if(!recipient || !amount || amount <= 0) {
+                return alert("Invalid transaction details.");
+            }
+
+            if(recipient.toLowerCase() === currentUserEmail.toLowerCase()) {
+                return alert("PROTOCOL ERROR: Cannot send to self. Use a different Scorpio or External account.");
+            }
+
+            const totalDeduction = amount + fee;
+
+            if(currentBalance < totalDeduction) {
+                return alert(`INSUFFICIENT FUNDS: Need $${totalDeduction.toFixed(2)} (Amount + $1 Fee)`);
+            }
+
+            currentBalance -= totalDeduction;
+            updateDisplay();
+            
+            alert(`SUCCESS: $${amount} sent to ${recipient}.\n$1.00 Fee routed to Admin (${adminEmail}).`);
+            showPage('dashboard');
+        }
+
+        function updateDisplay() {
+            document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
+        }
+
+        function updatePhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                    document.getElementById('headerPic').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveProfile() {
+            const nick = document.getElementById('nickInput').value;
+            if(nick) {
+                document.getElementById('displayNick').innerText = nick;
+                alert("Identity Alias Updated.");
+            }
+        }
+    </script>
+</body>
+</html>
